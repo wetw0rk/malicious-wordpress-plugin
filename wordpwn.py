@@ -4,7 +4,7 @@
 # Version         : 2.0
 # Created date    : 3/1/2017
 # Last update     : 5/1/2017
-# Author          : Milton Valencia (wetw0rk)
+# Author          : wetw0rk
 # Inspired by     : Metasploit admin shell upload
 # Python version  : 2.7
 # Description     : Simply generates a wordpress plugin that will grant you a reverse shell
