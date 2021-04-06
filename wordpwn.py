@@ -40,6 +40,8 @@ def generate_plugin(LHOST, LPORT, PAYLOAD):
 	print("[*] Checking if msfvenom installed")
 	if "msfvenom" in os.listdir("/usr/bin/"):
 		print("[+] msfvenom installed")
+	elif "msfvenom" in os.listdir("/opt/metasploit-framework/bin/"):
+		print("[+] msfvenom installed (MacOS)")
 	else:
 		print("[-] msfvenom not installed")
 		sys.exit()
